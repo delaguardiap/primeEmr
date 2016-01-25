@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  subject { User.new(name: "Michael", email: "user@example.com")}
+  subject { User.new(name: "Michael", email: "user@example.com", password: "password", password_confirmation: "password")}
 
   it 'should be valid' do
     expect(subject.valid?).to eq(true)
@@ -21,6 +21,10 @@ RSpec.describe User, type: :model do
         expect(subject.valid?).not_to eq(true)
       end
 
+      it 'password should be present' do
+        subject.password = " "
+        expect(subject.valid?).not_to eq(true)
+      end
     end
 
     context 'field length' do
@@ -32,6 +36,11 @@ RSpec.describe User, type: :model do
 
       it 'email should not be too long' do
         subject.email = 'a' * 256
+        expect(subject.valid?).not_to eq(true)
+      end
+
+      it 'password should have a minimum length' do
+        subject.password = subject.password_confirmation = "a" * 5
         expect(subject.valid?).not_to eq(true)
       end
 
@@ -62,6 +71,12 @@ RSpec.describe User, type: :model do
         subject.save
         expect(duplicate_user.valid?).not_to eq(true)
       end
+
+    end
+
+    context 'valid password' do
+
+
 
     end
 
